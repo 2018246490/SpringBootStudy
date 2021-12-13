@@ -1,4 +1,4 @@
-package com.escope.study;
+package com.study;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author lvweilin
  * @date 2021/11/29 14:17
  * @return a
- */@SpringBootApplication
+ */
+@SpringBootApplication
 public class StudyApplication {
 
     public static void main(String[] args) {

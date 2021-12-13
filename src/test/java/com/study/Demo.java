@@ -1,6 +1,6 @@
-package com.escope.study;
+package com.study;
 
-import com.escope.study.websocket.MySocketClient;
+import com.study.websocket.MySocketClient;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
@@ -8,12 +8,12 @@ import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Administrator
+ * Administrator  websokcet客户端测试
  * 2021/11/29
  */
 public class Demo {
     public static void main(String[] args) {
-        String destUri = "wss://its.sutpc.com/api/yijing/bhw/test/sim/wsHandler/Common/pageid";
+        String destUri = "url";
         if (args.length > 0) {
             destUri = args[0];
         }
