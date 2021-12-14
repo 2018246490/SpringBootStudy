@@ -1,5 +1,7 @@
 package com.study.util;
 
+import org.springframework.boot.system.ApplicationHome;
+
 import java.io.*;
 import java.nio.channels.FileChannel;
 
@@ -172,6 +174,13 @@ public class FileUtil {
             }
 
         }
+    }
+
+    public static String getWebAppsPath() {
+        ApplicationHome home = new ApplicationHome(FileUtil.class);
+        File sysfile = home.getSource();
+        String reulst = sysfile.getParentFile().getParentFile().getParentFile().toString();
+        return reulst;
     }
 
     public static void main(String[] args) throws IOException {

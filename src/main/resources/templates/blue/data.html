@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>蓝牙扫描数据下载</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" th:href="@{../lib/layui/css/layui.css}">
+    <script th:src="@{../lib/layui/layui.js}" charset="utf-8"></script>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <form class="layui-form layui-col-space5" action="../dataFile/bluetoothData" method="post">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="bid" th:value="${bid}" placeholder="请输入地图编号" lay-verify="required"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="weixinName" th:value="${weixinName}" placeholder="请输入微信昵称"
+                                   lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach"><i
+                                    class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-body ">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>文件名称</th>
+                            <th>时间</th>
+                            <th>操作</th>
+                        </thead>
+                        <tbody>
+                        <tr th:if="showTips" th:each="fi : ${list}">
+                            <td th:text="${fi.name}"></td>
+                            <td th:text="${fi.time}"></td>
+                            <td class="td-manage" style="margin: auto;">
+                                <a th:data-filename="${fi.name}" th:data-bid="${bid}" th:data-weixinname="${weixinName}"
+                                   onclick="down(this)" href="javascript:;" title="下载">
+
+                                    <i class="layui-icon">&#xe601;</i>
+                                </a>
+
+                                <a style="margin-left: 40px;" th:data-filename="${fi.name}" th:data-bid="${bid}" th:data-weixinname="${weixinName}"
+                                   onclick="del(this)" href="javascript:;" title="删除">
+                                    <i class="layui-icon">&#xe640;</i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:unless="${showTips}">
+                            <td colspan="3" th:text="${msg}">暂无数据...</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        //自定义验证规则
+        form.verify({
+            nikename: function (value) {
+                if (value.length < 5) {
+                    return '昵称至少得5个字符啊';
+                }
+            },
+            pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            repass: function (value) {
+                if ($('#L_pass').val() != $('#L_repass').val()) {
+                    return '两次密码不一致';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(sreach)', function (data) {
+            console.log(data);
+            return true;
+        });
+    });
+
+    function down(obj) {
+        let par = $(obj).data();
+        var link = document.createElement('a');
+        //设置下载的文件名
+        link.download = name;
+        link.style.display = 'none';
+        //设置下载路径
+        link.href = "../dataFile/download?bid=" + par.bid + "&weixinName=" + par.weixinname + "&fileName=" + par.filename;
+        //触发点击
+        document.body.appendChild(link);
+        link.click();
+        //移除节点
+        document.body.removeChild(link);
+    }
+
+    function del(obj) {
+        let par = $(obj).data();
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                url: "../dataFile/del",
+                type: 'get',
+                dataType: "json",
+                data: {
+                    "bid": par.bid,
+                    "weixinName": par.weixinname,
+                    "fileName": par.filename
+                },
+                success: function(data) {
+                    if(data.code == "200"){
+                        $(obj).parent().parent().remove();
+                        layer.msg('已删除!',{icon:1,time:1000});
+                    }else {
+                        layer.msg(data.msg,{icon:3,time:1000});
+                    }
+
+                }
+            })
+        });
+    }
+</script>
+</html>
